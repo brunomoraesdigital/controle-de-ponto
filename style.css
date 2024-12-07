@@ -86,7 +86,7 @@ main {
 }
 
 button {
-  width: 4.5rem;
+  width: 4rem;
   padding: 0.5rem;
   font-size: 0.9rem;
   font-weight: bold;
@@ -96,6 +96,12 @@ button {
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background 0.3s, transform 0.2s;
+}
+.fa-arrow-rotate-right {
+  transform: rotate(180deg);
+}
+.esconder {
+  display: none;
 }
 
 button:hover {
