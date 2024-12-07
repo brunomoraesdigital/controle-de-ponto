@@ -61,7 +61,6 @@ main {
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-  position: relative;
 }
 
 .visorCronometro {
@@ -76,6 +75,7 @@ main {
   padding: 2rem;
   margin-bottom: 1rem;
   color: #4682b4;
+  position: relative;
 }
 
 .controles {
@@ -101,7 +101,7 @@ button {
   transform: rotate(180deg);
 }
 .esconder {
-  display: none;
+  display: none
 }
 
 button:hover {
@@ -115,21 +115,22 @@ button:active {
 }
 
 .visorVolta {
-  display: flex; /* Adiciona layout flex */
-  flex-direction: column; /* Alinha os itens verticalmente */
-  gap: 0.3rem; /* Define o espaço entre as linhas */
-  height: 6.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 90%;
+  margin-right: 0.4rem;
   background: #faf6ee;
   border: 2px solid #ddd;
   border-radius: 0.5rem;
   padding: 0.5rem 0.6rem 0.5rem 0.4rem; 
   max-height: 10rem;
   overflow-y: auto;
-  position: absolute;
-  font-size: 0.7rem;
-  top: 1.2rem;
-  right: 1.2rem;
+  font-size: 0.5rem;
   overflow-y: scroll;
+  position: absolute;
+  right: 0;
+  color: grey;
 }
 
 
