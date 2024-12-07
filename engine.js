@@ -1,4 +1,6 @@
-const contadorElemento = document.getElementById('contador');
+const visorContadorElemento = document.getElementById('visorContador');
+const visorVoltaElemento = document.getElementById('visorVolta');
+
 const iniciarBotao = document.getElementById('iniciar');
 const pararBotao = document.getElementById('parar');
 const zerarBotao = document.getElementById('zerar');
