@@ -112,7 +112,7 @@ button:active {
   display: flex; /* Adiciona layout flex */
   flex-direction: column; /* Alinha os itens verticalmente */
   gap: 0.3rem; /* Define o espaço entre as linhas */
-  height: 6.2rem;
+  height: 6.5rem;
   background: #faf6ee;
   border: 2px solid #ddd;
   border-radius: 0.5rem;
