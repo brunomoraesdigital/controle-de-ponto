@@ -8,7 +8,7 @@ const pararBotao = document.getElementById('parar');
 const zerarBotao = document.getElementById('zerar');
 const voltaBotao = document.getElementById('volta');
 
-let numerosDoContador = 0;
+let segundosDoContador = 0;
 let intervalo = 0;
 let cronometroAtivo = false;
 let cronometroPausado = false;
@@ -20,7 +20,7 @@ let indiceDasVoltas = 0
 function iniciarCronometro() {
   if (cronometroAtivo === false && cronometroPausado === false) {
     if (cronometroParado === true) {
-      visorContadorElemento.textContent = numerosDoContador;
+      visorContadorElemento.textContent = formatarTempo(segundosDoContador);
       cronometroParado = false;
       visorVoltaElemento.textContent = '';
       visorVoltaElemento.classList.add('esconder');
@@ -29,8 +29,8 @@ function iniciarCronometro() {
     cronometroAtivo = true;
     // true - false
     intervalo = setInterval(function () {
-      numerosDoContador++;
-      visorContadorElemento.textContent = numerosDoContador;
+      segundosDoContador++;
+      visorContadorElemento.textContent = formatarTempo(segundosDoContador);
     }, 1000);
     playIconeElemento.classList.toggle("esconder");
     pauseIconeElemento.classList.toggle("esconder");
@@ -59,7 +59,7 @@ function pararCronometro() {
     indiceDasVoltas = 0;
     // false - false
     clearInterval(intervalo);
-    numerosDoContador = 0;
+    segundosDoContador = 0;
     playIconeElemento.classList.remove('esconder');
     pauseIconeElemento.classList.add('esconder');
   }
@@ -75,23 +75,22 @@ function zerarCronometro() {
     visorVoltaElemento.classList.add('esconder');
     // false - false
     clearInterval(intervalo);
-    numerosDoContador = 0;
-    visorContadorElemento.textContent = numerosDoContador;
+    segundosDoContador = 0;
+    visorContadorElemento.textContent = formatarTempo(segundosDoContador);
     playIconeElemento.classList.remove('esconder');
     pauseIconeElemento.classList.add('esconder');
   }
 }
 function registrarVolta() {
 
-  visorVoltaElemento.classList.remove('esconder');
-
   if (cronometroAtivo === true && cronometroPausado === false) {
     console.log('volta pressionado');
+    visorVoltaElemento.classList.remove('esconder');
 
     let criarRegistro = false;
 
     if (guardarVolta.length < 20) {
-      guardarVolta.push(numerosDoContador);
+      guardarVolta.push(segundosDoContador);
       criarRegistro = true;
     }
     else if (guardarVolta.length === 20) {
@@ -105,18 +104,28 @@ function registrarVolta() {
     if (criarRegistro === true) {
       const tagP = document.createElement('p');
       if (guardarVolta.length < 21) {
-        tagP.textContent = `Volta-${indiceDasVoltas + 1}: ${guardarVolta[indiceDasVoltas]}`;
-
+        if (guardarVolta.length > 1) {
+          tagP.textContent = `Volta-${(indiceDasVoltas + 1).toString().padStart(2, '0')}: ${formatarTempo(guardarVolta[indiceDasVoltas] - guardarVolta[indiceDasVoltas - 1])}`;
+        } else {
+          tagP.textContent = `Volta-${(indiceDasVoltas + 1).toString().padStart(2, '0')}: ${formatarTempo(guardarVolta[indiceDasVoltas])}`;
+        }
       } else {
         tagP.textContent = `${guardarVolta[indiceDasVoltas]}`;
       }
-
       visorVoltaElemento.appendChild(tagP);
       indiceDasVoltas++;
-
     }
   }
 }
+
+function formatarTempo(segundos) {
+  const horas = Math.floor(segundos / 3600);
+  const minutos = Math.floor((segundos % 3600) / 60);
+  const segundosRestantes = segundos % 60;
+
+  return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundosRestantes).padStart(2, '0')}`;
+}
+
 
 
 iniciarBotao.addEventListener('click', iniciarCronometro);
