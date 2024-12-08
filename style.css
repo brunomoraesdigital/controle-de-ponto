@@ -101,9 +101,6 @@ button {
 .fa-arrow-rotate-right {
   transform: rotate(180deg);
 }
-.esconder {
-  display: none
-}
 
 button:hover {
   background: #87cefa;
@@ -116,6 +113,7 @@ button:active {
 }
 
 .visorVolta {
+  width: 7rem;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -145,4 +143,9 @@ footer {
   font-size: 0.9rem;
   box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
   border-top: 4px solid #4682b4;
+}
+
+
+.esconder {
+  display: none
 }
