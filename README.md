@@ -58,6 +58,7 @@ O cronômetro é organizado em três seções principais:
 - [x] A funcionalidade de registro de voltas ainda não está completamente implementada.
 - [x] O design pode ser aprimorado para uma experiência ainda mais envolvente.
 - [x] Melhorar a responsividade em telas muito pequenas.
+- [ ] Ao "parar" o cronômetro o botão "zerar" não funciona.
 
 ---
 
