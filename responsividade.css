@@ -1,0 +1,35 @@
+
+@media (min-width: 2001px) { html{font-size: 32px;}}
+@media (min-width: 1801px) and (max-width: 2000px) { html{font-size: 30px;}}
+@media (min-width: 1441px) and (max-width: 1800px) { html{font-size: 26px;}}
+@media (min-width: 1025px) and (max-width: 1440px) { html{font-size: 24px;}}
+@media (min-width: 769px) and (max-width: 1024px) { html{font-size: 22px;}}
+@media (min-width: 600px) and (max-width: 768px) { html{font-size: 20px;}}
+@media (max-width: 375px) { html{font-size: 15px;}}
+@media (max-width: 365px) { html{font-size: 14px;}}
+@media (max-width: 345px) { html{font-size: 13px;}}
+@media (max-width: 315px) { html{font-size: 12px;}} 
+@media (max-width: 295px) { html{font-size: 11px;}} 
+@media (max-width: 275px) { html{font-size: 10px;}} 
+@media (max-width: 245px) { html{font-size: 9px;}} 
+@media (max-width: 225px) { html{font-size: 8px;}} 
+@media (max-width: 205px) { html {font-size: 7px;}} 
+@media (max-width: 175px) { html {font-size: 6px;}} 
+@media (max-width: 155px) { html {font-size: 5px;}} 
+@media (max-width: 135px) { html {font-size: 4px;}}
+@media (max-width: 105px) { html {font-size: 3px;}}
+
+/* Tablets pequenos (768px a 1024px de largura) */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  
+}
+
+/* Tablets grandes ou laptops pequenos (1025px a 1366px de largura) */
+@media screen and (min-width: 1025px) and (max-width: 1366px) and (orientation: landscape) {
+  
+}
+
+/* Desktops grandes (1367px e acima de largura) */
+@media screen and (min-width: 1367px) and (orientation: landscape) {
+  
+}
