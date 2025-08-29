@@ -1,78 +1,1082 @@
 <!DOCTYPE html>
-<html lang="pr-BR">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Ponto Eletrônico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cor-fundo: #f5f5f5;
+            --cor-cabecalho: #2c3e50;
+            --cor-texto: #333;
+            --cor-branco: #fff;
+            --cor-cinza-claro: #f9f9f9;
+            --cor-cinza-medio: #e9e9e9;
+            --cor-verde-claro: #d4edda;
+            --cor-azul-claro: #d1ecf1;
+            --cor-hover: #e3f2fd;
+            --cor-borda: #ddd;
+            --cor-link: #007bff;
+            --cor-positivo: #28a745;
+            --cor-negativo: #dc3545;
+            --cor-ponto-facultativo: #e8f5e9;
+            --cor-falta: #ffebee;
+            --cor-atestado: #fff3e0;
+            --cor-recesso: #e3f2fd;
+            --cor-ferias: #e8f5e9;
+            --cor-outros: #f3e5f5;
+        }
 
-    <title>HTML</title>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <!-- HTML -->
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+            padding: 20px;
+        }
 
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
-        integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsividade.css">
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--cor-branco);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            background-color: var(--cor-cabecalho);
+            color: var(--cor-branco);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 15px;
+        }
+
+        .configuracoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--cor-cinza-medio);
+            border-radius: 8px;
+            align-items: flex-end;
+        }
+
+        .configuracoes div {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .config-mes-ano {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="month"], input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: var(--cor-cabecalho);
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover {
+            background-color: #1a2530;
+        }
+
+        .btn-confirmar {
+            background-color: var(--cor-positivo);
+            padding: 8px 12px;
+        }
+
+        .btn-restaurar {
+            background-color: var(--cor-negativo);
+        }
+
+        .btn-config-alerta {
+            background-color: #6c757d;
+            padding: 8px 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid var(--cor-borda);
+        }
+
+        th {
+            background-color: var(--cor-cabecalho);
+            color: var(--cor-branco);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--cor-cinza-claro);
+        }
+
+        tr:nth-child(odd) {
+            background-color: var(--cor-branco);
+        }
+
+        tr:hover {
+            background-color: var(--cor-hover);
+        }
+
+        tr.dia-atual {
+            background-color: var(--cor-verde-claro);
+        }
+
+        tr.dia-fechado td {
+            color: #888;
+            background-color: #f9f9f9;
+        }
+
+        input[type="time"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+        }
+
+        .saldo-positivo {
+            color: var(--cor-positivo);
+            font-weight: bold;
+        }
+
+        .saldo-negativo {
+            color: var(--cor-negativo);
+            font-weight: bold;
+        }
+
+        .relatorio {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--cor-cinza-medio);
+            border-radius: 8px;
+        }
+
+        .relatorio-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: var(--cor-branco);
+            border-radius: 4px;
+        }
+
+        .observacoes {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--cor-borda);
+        }
+
+        .copyright a {
+            color: var(--cor-link);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .copyright a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-registrar {
+            background-color: var(--cor-positivo);
+            margin-top: 5px;
+        }
+
+        .btn-editar {
+            background-color: var(--cor-link);
+            margin-top: 5px;
+        }
+
+        .tipo-dia {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            width: 100%;
+        }
+
+        .tipo-util {
+            background-color: var(--cor-verde-claro);
+        }
+
+        .tipo-fim-semana {
+            background-color: var(--cor-cinza-medio);
+        }
+
+        .tipo-feriado {
+            background-color: var(--cor-azul-claro);
+        }
+
+        .tipo-ponto-facultativo {
+            background-color: var(--cor-ponto-facultativo);
+        }
+
+        .tipo-falta {
+            background-color: var(--cor-falta);
+        }
+
+        .tipo-atestado-servidor, .tipo-atestado-acompanhamento {
+            background-color: var(--cor-atestado);
+        }
+
+        .tipo-recesso {
+            background-color: var(--cor-recesso);
+        }
+
+        .tipo-ferias {
+            background-color: var(--cor-ferias);
+        }
+
+        .tipo-outros {
+            background-color: var(--cor-outros);
+        }
+
+        .btn-reabrir {
+            background-color: var(--cor-negativo);
+            margin-top: 5px;
+        }
+
+        .config-alerta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .config-alerta input {
+            width: 60px;
+        }
+
+        .notificacao {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #ffc107;
+            color: #333;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+
+        .alerta-config {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Cabeçalho da página -->
-    <header>
-        <h1>
-            Cronômetro
-        </h1>
-        <h2>
-            Um cronômetro minimalista com controles simples e diretos.
-        </h2>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Controle de Ponto Eletrônico</h1>
+        </header>
 
-    <!-- Conteúdo principal -->
-    <main>
-        <div class="container">
-            <section id="visorCronometro" class="visorCronometro">
-                <div id="visorContador">
-                    00:00:00
+        <div class="configuracoes">
+            <div class="config-mes-ano">
+                <div style="flex: 1;">
+                    <label for="mes-ano">Mês/Ano:</label>
+                    <input type="month" id="mes-ano" required>
                 </div>
-                <div id="visorVolta" class="visorVolta esconder">
-                <!--<p>Volta-1: 00:00:00</p>
-                <p>Volta-2: 00:00:00</p>
-                <p>Volta-3: 00:00:00</p>
-                <p>Volta-4: 00:00:00</p>
-                <p>Volta-5: 00:00:00</p>
-                <p>Volta-6: 00:00:00</p>
-                <p>Volta-7: 00:00:00</p>
-                <p>Volta-8: 00:00:00</p>-->
+                <button id="btn-confirmar" class="btn-confirmar" title="Confirmar mês/ano">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button id="btn-restaurar" class="btn-restaurar" title="Restaurar mês">
+                    <i class="fas fa-undo"></i>
+                </button>
             </div>
-            </section>
-            <section id="controles" class="controles">
-                <button id="iniciar" class="iniciar">
-                    <i id="playIcone" class="fa-solid fa-play"></i>
-                    <i id="pauseIcone" class="fa-solid fa-pause esconder"></i>
-                </button>
-                <button id="parar" class="parar">
-                  <i class="fa-solid fa-stop"></i>
-                </button>
-                <button id="zerar" class="zerar">
-                  <i class="fa-solid fa-trash"></i>
-                  </button>
-                <button id="volta" class="volta">
-                  <i class="fa-solid fa-arrow-rotate-right"></i>
-                  </button>
-            </section>
+            <div>
+                <label for="nome">Nome (opcional):</label>
+                <input type="text" id="nome" placeholder="Seu nome">
+            </div>
+            <div>
+                <label for="matricula">Matrícula (opcional):</label>
+                <input type="text" id="matricula" placeholder="Sua matrícula">
+            </div>
         </div>
-    </main>
 
-    <!-- Rodapé da página -->
-    <footer>
-        <p>
-            &#169; 2024 Bruno Moraes | Evoluindo a cada código
-        </p>
-    </footer>
+        <div class="alerta-config">
+            <div class="config-alerta">
+                <label for="minutos-alerta">Alerta para 2ª entrada:</label>
+                <input type="number" id="minutos-alerta" min="1" max="60" value="5">
+                <span>minutos antes</span>
+                <button id="btn-salvar-config" class="btn-config-alerta">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
 
-    <script src="engine.js"></script>
+        <div id="tabela-container" style="display: none;">
+            <h2>Registro de Pontos</h2>
+            <table id="tabela-ponto">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Entrada 1</th>
+                        <th>Saída 1</th>
+                        <th>Entrada 2</th>
+                        <th>Saída 2</th>
+                        <th>Saldo</th>
+                        <th>Tipo de Dia</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    <!-- As linhas serão preenchidas via JavaScript -->
+                </tbody>
+            </table>
+
+            <h2>Relatório</h2>
+            <div class="relatorio">
+                <div class="relatorio-item">
+                    <span>Horas previstas:</span>
+                    <span id="horas-previstas">00:00</span>
+                </div>
+                <div class="relatorio-item">
+                    <span>Horas trabalhadas:</span>
+                    <span id="horas-trabalhadas">00:00</span>
+                </div>
+                <div class="relatorio-item">
+                    <span>Saldo positivo:</span>
+                    <span id="saldo-positivo" class="saldo-positivo">00:00</span>
+                </div>
+                <div class="relatorio-item">
+                    <span>Saldo negativo:</span>
+                    <span id="saldo-negativo" class="saldo-negativo">00:00</span>
+                </div>
+                <div class="relatorio-item">
+                    <span>Tipos de dias:</span>
+                    <span id="tipos-dias">-</span>
+                </div>
+            </div>
+
+            <h2>Observações</h2>
+            <textarea id="observacoes" class="observacoes" placeholder="Adicione aqui suas observações..."></textarea>
+        </div>
+
+        <div class="copyright">
+            <a href="https://bmfolio.web.app/" title="" target="_blank" rel="noopener noreferrer">
+                <span>© <span id="ano-atual">2025</span> Bruno Moraes</span>
+            </a>
+            <a href="licenca-agplv3.html" title="Visualizar licença AGPLv3" target="_blank" rel="noopener noreferrer">AGPL-3.0 license</a>
+            <a href="#" title="Saiba como suas informações são armazenadas" class="comoArmazena">Como as informações são armazenadas?</a>
+        </div>
+    </div>
+
+    <div id="notificacao" class="notificacao">
+        Lembrete: Hora de bater a segunda entrada em breve!
+    </div>
+
+    <audio id="alarme-sonoro" preload="auto">
+        <source src="notification.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Definir o ano atual no rodapé
+            document.getElementById('ano-atual').textContent = new Date().getFullYear();
+            
+            // Elementos do DOM
+            const mesAnoInput = document.getElementById('mes-ano');
+            const nomeInput = document.getElementById('nome');
+            const matriculaInput = document.getElementById('matricula');
+            const btnConfirmar = document.getElementById('btn-confirmar');
+            const btnRestaurar = document.getElementById('btn-restaurar');
+            const tabelaContainer = document.getElementById('tabela-container');
+            const corpoTabela = document.getElementById('corpo-tabela');
+            const horasPrevistas = document.getElementById('horas-previstas');
+            const horasTrabalhadas = document.getElementById('horas-trabalhadas');
+            const saldoPositivo = document.getElementById('saldo-positivo');
+            const saldoNegativo = document.getElementById('saldo-negativo');
+            const tiposDias = document.getElementById('tipos-dias');
+            const observacoesTextarea = document.getElementById('observacoes');
+            const minutosAlertaInput = document.getElementById('minutos-alerta');
+            const btnSalvarConfig = document.getElementById('btn-salvar-config');
+            const notificacao = document.getElementById('notificacao');
+            const alarmeSonoro = document.getElementById('alarme-sonoro');
+            
+            // Variáveis globais
+            let mesSelecionado = null;
+            let anoSelecionado = null;
+            let dadosPonto = {};
+            let intervaloAlerta = null;
+            let minutosAlerta = 5;
+            
+            // Inicializar com o mês/ano atual
+            const hoje = new Date();
+            const mesAtual = String(hoje.getMonth() + 1).padStart(2, '0');
+            const anoAtual = hoje.getFullYear();
+            mesAnoInput.value = `${anoAtual}-${mesAtual}`;
+            
+            // Carregar dados salvos e inicializar automaticamente
+            setTimeout(() => {
+                carregarDadosSalvos();
+                confirmarMesAno();
+            }, 500);
+            
+            // Event Listeners
+            btnConfirmar.addEventListener('click', confirmarMesAno);
+            btnRestaurar.addEventListener('click', restaurarMes);
+            observacoesTextarea.addEventListener('change', salvarDados);
+            btnSalvarConfig.addEventListener('click', salvarConfiguracaoAlerta);
+            
+            // Função para confirmar o mês/ano selecionado
+            function confirmarMesAno() {
+                if (!mesAnoInput.value) {
+                    alert('Por favor, selecione um mês e ano.');
+                    return;
+                }
+                
+                // Extrair mês e ano do input
+                [anoSelecionado, mesSelecionado] = mesAnoInput.value.split('-');
+                
+                // Verificar se há dados salvos para outro mês/ano
+                const chaveDados = `ponto_${mesSelecionado}_${anoSelecionado}`;
+                const dadosExistentes = localStorage.getItem(chaveDados);
+                
+                if (dadosExistentes && Object.keys(JSON.parse(dadosExistentes)).length > 0) {
+                    // Se já existem dados, apenas carregar
+                    dadosPonto = JSON.parse(dadosExistentes);
+                } else {
+                    // Inicializar objeto vazio
+                    dadosPonto = {};
+                }
+                
+                // Carregar observações se existirem
+                const chaveObservacoes = `observacoes_${mesSelecionado}_${anoSelecionado}`;
+                const observacoesSalvas = localStorage.getItem(chaveObservacoes);
+                if (observacoesSalvas) {
+                    observacoesTextarea.value = observacoesSalvas;
+                } else {
+                    observacoesTextarea.value = '';
+                }
+                
+                // Carregar nome e matrícula se existirem
+                const nomeSalvo = localStorage.getItem('nome');
+                if (nomeSalvo) nomeInput.value = nomeSalvo;
+                
+                const matriculaSalva = localStorage.getItem('matricula');
+                if (matriculaSalva) matriculaInput.value = matriculaSalva;
+                
+                // Carregar configuração de alerta
+                const minutosAlertaSalvos = localStorage.getItem('minutosAlerta');
+                if (minutosAlertaSalvos) {
+                    minutosAlerta = parseInt(minutosAlertaSalvos);
+                    minutosAlertaInput.value = minutosAlerta;
+                }
+                
+                // Gerar tabela
+                gerarTabela();
+                
+                // Mostrar tabela e relatório
+                tabelaContainer.style.display = 'block';
+                
+                // Atualizar relatório
+                atualizarRelatorio();
+                
+                // Iniciar verificação de alertas
+                iniciarVerificacaoAlerta();
+            }
+            
+            // Função para restaurar o mês (limpar todos os dados)
+            function restaurarMes() {
+                if (!mesSelecionado || !anoSelecionado) {
+                    alert('Por favor, selecione um mês/ano primeiro.');
+                    return;
+                }
+                
+                if (!confirm('Tem certeza que deseja restaurar este mês? Todos os dados serão apagados e não poderão ser recuperados.')) {
+                    return;
+                }
+                
+                // Limpar dados do mês
+                const chaveDados = `ponto_${mesSelecionado}_${anoSelecionado}`;
+                const chaveObservacoes = `observacoes_${mesSelecionado}_${anoSelecionado}`;
+                
+                localStorage.removeItem(chaveDados);
+                localStorage.removeItem(chaveObservacoes);
+                
+                dadosPonto = {};
+                observacoesTextarea.value = '';
+                
+                // Regenerar a tabela
+                gerarTabela();
+                atualizarRelatorio();
+                
+                alert('Mês restaurado com sucesso! Todos os dados foram limpos.');
+            }
+            
+            // Função para gerar a tabela com os dias do mês
+            function gerarTabela() {
+                // Limpar tabela
+                corpoTabela.innerHTML = '';
+                
+                // Obter número de dias no mês
+                const diasNoMes = new Date(anoSelecionado, mesSelecionado, 0).getDate();
+                
+                // Gerar uma linha para cada dia do mês
+                for (let dia = 1; dia <= diasNoMes; dia++) {
+                    const data = new Date(anoSelecionado, mesSelecionado - 1, dia);
+                    const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, etc.
+                    const nomesDias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+                    
+                    // Verificar se é final de semana
+                    const isFinalSemana = diaSemana === 0 || diaSemana === 6;
+                    
+                    // Verificar se é o dia atual
+                    const hoje = new Date();
+                    const isHoje = dia === hoje.getDate() && 
+                                  (mesSelecionado - 1) === hoje.getMonth() && 
+                                  anoSelecionado == hoje.getFullYear();
+                    
+                    // Verificar se é um dia futuro
+                    const isFuturo = data > hoje;
+                    
+                    // Verificar se é um dia passado
+                    const isPassado = data < hoje && !isHoje;
+                    
+                    // Obter dados salvos para este dia, se existirem
+                    const chaveDia = `${dia.toString().padStart(2, '0')}-${mesSelecionado.padStart(2, '0')}-${anoSelecionado}`;
+                    const dadosDia = dadosPonto[chaveDia] || {};
+                    
+                    // Determinar o tipo padrão do dia
+                    let tipoPadrao = 'util';
+                    if (isFinalSemana) tipoPadrao = 'fim-semana';
+                    
+                    // Criar linha da tabela
+                    const tr = document.createElement('tr');
+                    
+                    // Adicionar classes conforme o tipo de dia
+                    if (isHoje) {
+                        tr.classList.add('dia-atual');
+                    } else if (isPassado || isFuturo) {
+                        tr.classList.add('dia-fechado');
+                    }
+                    
+                    // Coluna Data
+                    const tdData = document.createElement('td');
+                    tdData.textContent = `${dia.toString().padStart(2, '0')} - ${nomesDias[diaSemana]}`;
+                    tr.appendChild(tdData);
+                    
+                    // Coluna Entrada 1
+                    const tdEntrada1 = document.createElement('td');
+                    const entrada1 = document.createElement('input');
+                    entrada1.type = 'time';
+                    entrada1.value = dadosDia.entrada1 || '';
+                    entrada1.disabled = isPassado && !dadosDia.editavel;
+                    entrada1.addEventListener('change', salvarDados);
+                    tdEntrada1.appendChild(entrada1);
+                    tr.appendChild(tdEntrada1);
+                    
+                    // Coluna Saída 1
+                    const tdSaida1 = document.createElement('td');
+                    const saida1 = document.createElement('input');
+                    saida1.type = 'time';
+                    saida1.value = dadosDia.saida1 || '';
+                    saida1.disabled = isPassado && !dadosDia.editavel;
+                    saida1.addEventListener('change', salvarDados);
+                    tdSaida1.appendChild(saida1);
+                    tr.appendChild(tdSaida1);
+                    
+                    // Coluna Entrada 2
+                    const tdEntrada2 = document.createElement('td');
+                    const entrada2 = document.createElement('input');
+                    entrada2.type = 'time';
+                    entrada2.value = dadosDia.entrada2 || '';
+                    entrada2.disabled = isPassado && !dadosDia.editavel;
+                    entrada2.addEventListener('change', salvarDados);
+                    tdEntrada2.appendChild(entrada2);
+                    tr.appendChild(tdEntrada2);
+                    
+                    // Coluna Saída 2
+                    const tdSaida2 = document.createElement('td');
+                    const saida2 = document.createElement('input');
+                    saida2.type = 'time';
+                    saida2.value = dadosDia.saida2 || '';
+                    saida2.disabled = isPassado && !dadosDia.editavel;
+                    saida2.addEventListener('change', salvarDados);
+                    tdSaida2.appendChild(saida2);
+                    tr.appendChild(tdSaida2);
+                    
+                    // Coluna Saldo
+                    const tdSaldo = document.createElement('td');
+                    const saldoSpan = document.createElement('span');
+                    
+                    // Calcular saldo se todos os campos estiverem preenchidos
+                    if (entrada1.value && saida1.value && entrada2.value && saida2.value) {
+                        const saldo = calcularSaldo(entrada1.value, saida1.value, entrada2.value, saida2.value);
+                        saldoSpan.textContent = saldo;
+                        saldoSpan.className = saldo.startsWith('-') ? 'saldo-negativo' : 'saldo-positivo';
+                    } else {
+                        saldoSpan.textContent = '00:00';
+                    }
+                    
+                    tdSaldo.appendChild(saldoSpan);
+                    tr.appendChild(tdSaldo);
+                    
+                    // Coluna Tipo de Dia
+                    const tdTipoDia = document.createElement('td');
+                    const tipoDiaSelect = document.createElement('select');
+                    tipoDiaSelect.classList.add('tipo-dia');
+                    
+                    const opcoesTipoDia = [
+                        { valor: 'util', texto: 'Dia Útil', classe: 'tipo-util' },
+                        { valor: 'fim-semana', texto: 'Fim de Semana', classe: 'tipo-fim-semana' },
+                        { valor: 'feriado', texto: 'Feriado', classe: 'tipo-feriado' },
+                        { valor: 'ponto-facultativo', texto: 'Ponto Facultativo', classe: 'tipo-ponto-facultativo' },
+                        { valor: 'falta', texto: 'Falta', classe: 'tipo-falta' },
+                        { valor: 'atestado-servidor', texto: 'Atestado Servidor', classe: 'tipo-atestado-servidor' },
+                        { valor: 'atestado-acompanhamento', texto: 'Atestado Acompanhamento', classe: 'tipo-atestado-acompanhamento' },
+                        { valor: 'recesso', texto: 'Recesso', classe: 'tipo-recesso' },
+                        { valor: 'ferias', texto: 'Férias', classe: 'tipo-ferias' },
+                        { valor: 'outros', texto: 'Outros', classe: 'tipo-outros' }
+                    ];
+                    
+                    opcoesTipoDia.forEach(opcao => {
+                        const option = document.createElement('option');
+                        option.value = opcao.valor;
+                        option.textContent = opcao.texto;
+                        option.classList.add(opcao.classe);
+                        if (dadosDia.tipo === opcao.valor) {
+                            option.selected = true;
+                        } else if (!dadosDia.tipo && opcao.valor === tipoPadrao) {
+                            option.selected = true;
+                        }
+                        tipoDiaSelect.appendChild(option);
+                    });
+                    
+                    tipoDiaSelect.addEventListener('change', function() {
+                        this.className = 'tipo-dia';
+                        for (const opcao of opcoesTipoDia) {
+                            if (this.value === opcao.valor) {
+                                this.classList.add(opcao.classe);
+                                break;
+                            }
+                        }
+                        
+                        // Habilitar/desabilitar campos de horário com base no tipo
+                        const isDiaUtil = this.value === 'util';
+                        entrada1.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                        saida1.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                        entrada2.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                        saida2.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                        
+                        // Se não for dia útil, limpar os horários
+                        if (!isDiaUtil) {
+                            entrada1.value = '';
+                            saida1.value = '';
+                            entrada2.value = '';
+                            saida2.value = '';
+                            saldoSpan.textContent = '00:00';
+                            saldoSpan.className = '';
+                        }
+                        
+                        salvarDados();
+                        atualizarRelatorio();
+                    });
+                    
+                    // Aplicar classe inicial
+                    for (const opcao of opcoesTipoDia) {
+                        if (tipoDiaSelect.value === opcao.valor) {
+                            tipoDiaSelect.classList.add(opcao.classe);
+                            break;
+                        }
+                    }
+                    
+                    // Habilitar/desabilitar campos com base no tipo de dia
+                    const isDiaUtil = tipoDiaSelect.value === 'util';
+                    entrada1.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                    saida1.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                    entrada2.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                    saida2.disabled = !isDiaUtil || (isPassado && !dadosDia.editavel);
+                    tipoDiaSelect.disabled = isPassado && !dadosDia.editavel;
+                    
+                    tdTipoDia.appendChild(tipoDiaSelect);
+                    tr.appendChild(tdTipoDia);
+                    
+                    // Coluna Ações
+                    const tdAcoes = document.createElement('td');
+                    
+                    // Botão Registrar (apenas para o dia atual)
+                    if (isHoje) {
+                        const btnRegistrar = document.createElement('button');
+                        btnRegistrar.textContent = 'Registrar Agora';
+                        btnRegistrar.classList.add('btn-registrar');
+                        btnRegistrar.addEventListener('click', () => {
+                            registrarPontoAutomatico(entrada1, saida1, entrada2, saida2);
+                        });
+                        tdAcoes.appendChild(btnRegistrar);
+                    }
+                    
+                    // Botão Editar/Reabrir (para dias passados)
+                    if (isPassado) {
+                        const btnEditar = document.createElement('button');
+                        btnEditar.textContent = dadosDia.editavel ? 'Bloquear Edição' : 'Reabrir Dia';
+                        btnEditar.classList.add(dadosDia.editavel ? 'btn-editar' : 'btn-reabrir');
+                        btnEditar.addEventListener('click', () => {
+                            const editavel = !dadosDia.editavel;
+                            dadosDia.editavel = editavel;
+                            
+                            // Habilitar/desabilitar campos com base no tipo de dia
+                            const isDiaUtil = tipoDiaSelect.value === 'util';
+                            entrada1.disabled = !isDiaUtil || !editavel;
+                            saida1.disabled = !isDiaUtil || !editavel;
+                            entrada2.disabled = !isDiaUtil || !editavel;
+                            saida2.disabled = !isDiaUtil || !editavel;
+                            tipoDiaSelect.disabled = !editavel;
+                            
+                            btnEditar.textContent = editavel ? 'Bloquear Edição' : 'Reabrir Dia';
+                            btnEditar.className = editavel ? 'btn-editar' : 'btn-reabrir';
+                            salvarDados();
+                        });
+                        tdAcoes.appendChild(btnEditar);
+                    }
+                    
+                    tr.appendChild(tdAcoes);
+                    
+                    // Adicionar linha à tabela
+                    corpoTabela.appendChild(tr);
+                    
+                    // Salvar referência aos elementos para uso posterior
+                    tr._dados = {
+                        chave: chaveDia,
+                        entrada1,
+                        saida1,
+                        entrada2,
+                        saida2,
+                        saldo: saldoSpan,
+                        tipoDia: tipoDiaSelect
+                    };
+                }
+            }
+            
+            // Função para registrar ponto automaticamente
+            function registrarPontoAutomatico(entrada1, saida1, entrada2, saida2) {
+                const agora = new Date();
+                const horas = String(agora.getHours()).padStart(2, '0');
+                const minutos = String(agora.getMinutes()).padStart(2, '0');
+                const horario = `${horas}:${minutos}`;
+                
+                if (!entrada1.value) {
+                    entrada1.value = horario;
+                } else if (!saida1.value) {
+                    saida1.value = horario;
+                } else if (!entrada2.value) {
+                    entrada2.value = horario;
+                } else if (!saida2.value) {
+                    saida2.value = horario;
+                } else {
+                    // Todos os campos estão preenchidos, perguntar se quer reiniciar
+                    if (confirm('Todos os registros já foram preenchidos para hoje. Deseja reiniciar?')) {
+                        entrada1.value = '';
+                        saida1.value = '';
+                        entrada2.value = '';
+                        saida2.value = '';
+                        entrada1.value = horario;
+                    }
+                }
+                
+                salvarDados();
+                atualizarRelatorio();
+            }
+            
+            // Função para calcular o saldo de horas
+            function calcularSaldo(entrada1, saida1, entrada2, saida2) {
+                function timeToMinutes(time) {
+                    const [h, m] = time.split(':').map(Number);
+                    return h * 60 + m;
+                }
+                
+                function minutesToTime(minutes) {
+                    const h = Math.floor(Math.abs(minutes) / 60);
+                    const m = Math.abs(minutes) % 60;
+                    return `${minutes < 0 ? '-' : ''}${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                }
+                
+                const jornadaPadrao = 8 * 60; // 8 horas em minutos
+                const tempoAlmoco = 60; // 1 hora em minutos
+                
+                const minutosEntrada1 = timeToMinutes(entrada1);
+                const minutosSaida1 = timeToMinutes(saida1);
+                const minutosEntrada2 = timeToMinutes(entrada2);
+                const minutosSaida2 = timeToMinutes(saida2);
+                
+                const horasTrabalhadas = (minutosSaida1 - minutosEntrada1) + (minutosSaida2 - minutosEntrada2) - tempoAlmoco;
+                const saldoMinutos = horasTrabalhadas - jornadaPadrao;
+                
+                return minutesToTime(saldoMinutos);
+            }
+            
+            // Função para salvar dados no localStorage
+            function salvarDados() {
+                // Salvar nome e matrícula
+                if (nomeInput.value) localStorage.setItem('nome', nomeInput.value);
+                if (matriculaInput.value) localStorage.setItem('matricula', matriculaInput.value);
+                
+                // Salvar observações
+                const chaveObservacoes = `observacoes_${mesSelecionado}_${anoSelecionado}`;
+                localStorage.setItem(chaveObservacoes, observacoesTextarea.value);
+                
+                // Coletar dados da tabela
+                const linhas = corpoTabela.querySelectorAll('tr');
+                linhas.forEach(linha => {
+                    if (linha._dados) {
+                        const { chave, entrada1, saida1, entrada2, saida2, tipoDia } = linha._dados;
+                        
+                        if (entrada1.value || saida1.value || entrada2.value || saida2.value) {
+                            dadosPonto[chave] = {
+                                entrada1: entrada1.value,
+                                saida1: saida1.value,
+                                entrada2: entrada2.value,
+                                saida2: saida2.value,
+                                tipo: tipoDia.value
+                            };
+                            
+                            // Manter o status de edição se existir
+                            if (dadosPonto[chave].editavel !== undefined) {
+                                dadosPonto[chave].editavel = linha._dados.editavel;
+                            }
+                        } else {
+                            delete dadosPonto[chave];
+                        }
+                    }
+                });
+                
+                // Salvar dados do ponto
+                const chaveDados = `ponto_${mesSelecionado}_${anoSelecionado}`;
+                localStorage.setItem(chaveDados, JSON.stringify(dadosPonto));
+                
+                // Recalcular saldos
+                atualizarSaldos();
+                atualizarRelatorio();
+            }
+            
+            // Função para atualizar os saldos na tabela
+            function atualizarSaldos() {
+                const linhas = corpoTabela.querySelectorAll('tr');
+                linhas.forEach(linha => {
+                    if (linha._dados) {
+                        const { entrada1, saida1, entrada2, saida2, saldo } = linha._dados;
+                        
+                        if (entrada1.value && saida1.value && entrada2.value && saida2.value) {
+                            const saldoCalculado = calcularSaldo(entrada1.value, saida1.value, entrada2.value, saida2.value);
+                            saldo.textContent = saldoCalculado;
+                            saldo.className = saldoCalculado.startsWith('-') ? 'saldo-negativo' : 'saldo-positivo';
+                        } else {
+                            saldo.textContent = '00:00';
+                            saldo.className = '';
+                        }
+                    }
+                });
+            }
+            
+            // Função para atualizar o relatório
+            function atualizarRelatorio() {
+                let totalPrevisto = 0; // em minutos
+                let totalTrabalhado = 0; // em minutos
+                const contagemTiposDia = {};
+                
+                // Percorrer todas as linhas da tabela
+                const linhas = corpoTabela.querySelectorAll('tr');
+                linhas.forEach(linha => {
+                    if (linha._dados) {
+                        const { entrada1, saida1, entrada2, saida2, tipoDia } = linha._dados;
+                        
+                        // Contar tipo de dia
+                        const tipo = tipoDia.value;
+                        contagemTiposDia[tipo] = (contagemTiposDia[tipo] || 0) + 1;
+                        
+                        // Apenas dias úteis computam horas
+                        if (tipo === 'util') {
+                            // Para dias úteis, considerar 8 horas previstas
+                            totalPrevisto += 8 * 60; // 8 horas em minutos
+                            
+                            // Calcular horas trabalhadas se todos os campos estiverem preenchidos
+                            if (entrada1.value && saida1.value && entrada2.value && saida2.value) {
+                                function timeToMinutes(time) {
+                                    const [h, m] = time.split(':').map(Number);
+                                    return h * 60 + m;
+                                }
+                                
+                                const tempoAlmoco = 60; // 1 hora em minutos
+                                const minutosTrabalhados = (timeToMinutes(saida1.value) - timeToMinutes(entrada1.value)) + 
+                                                        (timeToMinutes(saida2.value) - timeToMinutes(entrada2.value)) - 
+                                                        tempoAlmoco;
+                                
+                                totalTrabalhado += minutosTrabalhados;
+                            }
+                        }
+                    }
+                });
+                
+                // Calcular saldo
+                const saldoMinutos = totalTrabalhado - totalPrevisto;
+                
+                // Converter para formato de tempo (HH:MM)
+                function minutesToTime(minutes) {
+                    const h = Math.floor(Math.abs(minutes) / 60);
+                    const m = Math.abs(minutes) % 60;
+                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                }
+                
+                // Atualizar relatório na interface
+                horasPrevistas.textContent = minutesToTime(totalPrevisto);
+                horasTrabalhadas.textContent = minutesToTime(totalTrabalhado);
+                
+                if (saldoMinutos >= 0) {
+                    saldoPositivo.textContent = minutesToTime(saldoMinutos);
+                    saldoNegativo.textContent = '00:00';
+                } else {
+                    saldoPositivo.textContent = '00:00';
+                    saldoNegativo.textContent = minutesToTime(saldoMinutos);
+                }
+                
+                // Atualizar contagem de tipos de dias
+                let textoContagem = '';
+                for (const tipo in contagemTiposDia) {
+                    if (contagemTiposDia[tipo] > 0) {
+                        textoContagem += `${contagemTiposDia[tipo]} ${tipo}, `;
+                    }
+                }
+                
+                tiposDias.textContent = textoContagem.slice(0, -2) || '-';
+            }
+            
+            // Função para carregar dados salvos
+            function carregarDadosSalvos() {
+                // Carregar nome e matrícula se existirem
+                const nomeSalvo = localStorage.getItem('nome');
+                if (nomeSalvo) nomeInput.value = nomeSalvo;
+                
+                const matriculaSalva = localStorage.getItem('matricula');
+                if (matriculaSalva) matriculaInput.value = matriculaSalva;
+                
+                // Carregar configuração de alerta
+                const minutosAlertaSalvos = localStorage.getItem('minutosAlerta');
+                if (minutosAlertaSalvos) {
+                    minutosAlerta = parseInt(minutosAlertaSalvos);
+                    minutosAlertaInput.value = minutosAlerta;
+                }
+            }
+            
+            // Função para salvar configuração de alerta
+            function salvarConfiguracaoAlerta() {
+                minutosAlerta = parseInt(minutosAlertaInput.value);
+                localStorage.setItem('minutosAlerta', minutosAlerta);
+                alert('Configuração de alerta salva com sucesso!');
+            }
+            
+            // Função para verificar se precisa alertar sobre segunda entrada
+            function verificarAlertaSegundaEntrada() {
+                const hoje = new Date();
+                const chaveDia = `${hoje.getDate().toString().padStart(2, '0')}-${(hoje.getMonth()+1).toString().padStart(2, '0')}-${hoje.getFullYear()}`;
+                const dadosHoje = dadosPonto[chaveDia];
+                
+                // Se não há dados para hoje ou já tem segunda entrada, não alertar
+                if (!dadosHoje || !dadosHoje.saida1 || dadosHoje.entrada2) {
+                    return;
+                }
+                
+                // Calcular horário esperado para segunda entrada (1 hora após a primeira saída)
+                const [horaSaida, minutoSaida] = dadosHoje.saida1.split(':').map(Number);
+                const saidaDate = new Date();
+                saidaDate.setHours(horaSaida, minutoSaida, 0, 0);
+                
+                // Horário mínimo para segunda entrada (1 hora após a saída)
+                const horarioMinEntrada2 = new Date(saidaDate.getTime() + 60 * 60000);
+                
+                // Horário de alerta (5 minutos antes do horário mínimo)
+                const horarioAlerta = new Date(horarioMinEntrada2.getTime() - minutosAlerta * 60000);
+                
+                // Verificar se estamos no período de alerta
+                if (hoje >= horarioAlerta && hoje < horarioMinEntrada2) {
+                    // Mostrar notificação
+                    notificacao.style.display = 'block';
+                    notificacao.textContent = `Lembrete: Hora de bater a segunda entrada em até ${minutosAlerta} minutos!`;
+                    
+                    // Tocar alerta sonoro (se disponível)
+                    try {
+                        alarmeSonoro.play();
+                    } catch (e) {
+                        console.log('Erro ao reproduzir áudio:', e);
+                    }
+                    
+                    // Ocultar notificação após 10 segundos
+                    setTimeout(() => {
+                        notificacao.style.display = 'none';
+                    }, 10000);
+                }
+            }
+            
+            // Função para iniciar verificação de alertas
+            function iniciarVerificacaoAlerta() {
+                // Limpar intervalo anterior se existir
+                if (intervaloAlerta) {
+                    clearInterval(intervaloAlerta);
+                }
+                
+                // Verificar a cada minuto
+                intervaloAlerta = setInterval(verificarAlertaSegundaEntrada, 60000);
+                
+                // Verificar imediatamente ao iniciar
+                verificarAlertaSegundaEntrada();
+            }
+        });
+    </script>
 </body>
-
 </html>
