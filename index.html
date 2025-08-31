@@ -125,11 +125,6 @@
             background-color: var(--cor-negativo);
         }
 
-        .btn-config-alerta {
-            background-color: #6c757d;
-            padding: 8px 12px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -186,20 +181,42 @@
             font-weight: bold;
         }
 
-        .relatorio {
+        .relatorio-textual {
             margin-bottom: 20px;
+            padding: 20px;
+            background-color: var(--cor-cinza-medio);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .saldo-mes-anterior {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .saldo-mes-anterior > div {
+            flex: 1;
             padding: 15px;
             background-color: var(--cor-cinza-medio);
             border-radius: 8px;
         }
 
-        .relatorio-item {
+        .horas-input {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: var(--cor-branco);
-            border-radius: 4px;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .horas-input input {
+            width: 60px;
+            text-align: right;
+        }
+
+        .horas-input span {
+            white-space: nowrap;
         }
 
         .observacoes {
@@ -287,36 +304,18 @@
             margin-top: 5px;
         }
 
-        .config-alerta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
+        .erro-horario {
+            border-color: var(--cor-negativo) !important;
+            background-color: #ffe6e6;
         }
 
-        .config-alerta input {
-            width: 60px;
-        }
-
-        .notificacao {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px;
-            background-color: #ffc107;
-            color: #333;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-        }
-
-        .alerta-config {
-            margin-top: 15px;
+        .alerta {
             padding: 10px;
-            background-color: #f8f9fa;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
             border-radius: 4px;
-            border-left: 4px solid #ffc107;
+            margin-bottom: 15px;
+            display: none;
         }
     </style>
 </head>
@@ -349,19 +348,11 @@
             </div>
         </div>
 
-        <div class="alerta-config">
-            <div class="config-alerta">
-                <label for="minutos-alerta">Alerta para 2ª entrada:</label>
-                <input type="number" id="minutos-alerta" min="1" max="60" value="5">
-                <span>minutos antes</span>
-                <button id="btn-salvar-config" class="btn-config-alerta">
-                    <i class="fas fa-save"></i> Salvar
-                </button>
-            </div>
-        </div>
-
         <div id="tabela-container" style="display: none;">
             <h2>Registro de Pontos</h2>
+            <div id="alerta" class="alerta">
+                <i class="fas fa-info-circle"></i> Todos os registros do dia já foram preenchidos.
+            </div>
             <table id="tabela-ponto">
                 <thead>
                     <tr>
@@ -370,7 +361,7 @@
                         <th>Saída 1</th>
                         <th>Entrada 2</th>
                         <th>Saída 2</th>
-                        <th>Saldo</th>
+                        <th>Saldo do Dia</th>
                         <th>Tipo de Dia</th>
                         <th>Ações</th>
                     </tr>
@@ -380,28 +371,30 @@
                 </tbody>
             </table>
 
-            <h2>Relatório</h2>
-            <div class="relatorio">
-                <div class="relatorio-item">
-                    <span>Horas previstas:</span>
-                    <span id="horas-previstas">00:00</span>
+            <div class="saldo-mes-anterior">
+                <div>
+                    <label for="saldo-positivo-anterior">Saldo positivo do mês anterior:</label>
+                    <div class="horas-input">
+                        <input type="number" id="saldo-positivo-horas" min="0" max="1000" value="0" step="1">
+                        <span>horas</span>
+                        <input type="number" id="saldo-positivo-minutos" min="0" max="59" value="0" step="1">
+                        <span>minutos</span>
+                    </div>
                 </div>
-                <div class="relatorio-item">
-                    <span>Horas trabalhadas:</span>
-                    <span id="horas-trabalhadas">00:00</span>
+                <div>
+                    <label for="saldo-negativo-anterior">Saldo negativo do mês anterior:</label>
+                    <div class="horas-input">
+                        <input type="number" id="saldo-negativo-horas" min="0" max="1000" value="0" step="1">
+                        <span>horas</span>
+                        <input type="number" id="saldo-negativo-minutos" min="0" max="59" value="0" step="1">
+                        <span>minutos</span>
+                    </div>
                 </div>
-                <div class="relatorio-item">
-                    <span>Saldo positivo:</span>
-                    <span id="saldo-positivo" class="saldo-positivo">00:00</span>
-                </div>
-                <div class="relatorio-item">
-                    <span>Saldo negativo:</span>
-                    <span id="saldo-negativo" class="saldo-negativo">00:00</span>
-                </div>
-                <div class="relatorio-item">
-                    <span>Tipos de dias:</span>
-                    <span id="tipos-dias">-</span>
-                </div>
+            </div>
+
+            <h2>Relatório Consolidado</h2>
+            <div id="relatorio-textual" class="relatorio-textual">
+                <!-- O relatório será gerado aqui -->
             </div>
 
             <h2>Observações</h2>
@@ -417,15 +410,6 @@
         </div>
     </div>
 
-    <div id="notificacao" class="notificacao">
-        Lembrete: Hora de bater a segunda entrada em breve!
-    </div>
-
-    <audio id="alarme-sonoro" preload="auto">
-        <source src="notification.mp3" type="audio/mpeg">
-        Seu navegador não suporta o elemento de áudio.
-    </audio>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Definir o ano atual no rodapé
@@ -439,23 +423,18 @@
             const btnRestaurar = document.getElementById('btn-restaurar');
             const tabelaContainer = document.getElementById('tabela-container');
             const corpoTabela = document.getElementById('corpo-tabela');
-            const horasPrevistas = document.getElementById('horas-previstas');
-            const horasTrabalhadas = document.getElementById('horas-trabalhadas');
-            const saldoPositivo = document.getElementById('saldo-positivo');
-            const saldoNegativo = document.getElementById('saldo-negativo');
-            const tiposDias = document.getElementById('tipos-dias');
             const observacoesTextarea = document.getElementById('observacoes');
-            const minutosAlertaInput = document.getElementById('minutos-alerta');
-            const btnSalvarConfig = document.getElementById('btn-salvar-config');
-            const notificacao = document.getElementById('notificacao');
-            const alarmeSonoro = document.getElementById('alarme-sonoro');
+            const saldoPositivoHorasInput = document.getElementById('saldo-positivo-horas');
+            const saldoPositivoMinutosInput = document.getElementById('saldo-positivo-minutos');
+            const saldoNegativoHorasInput = document.getElementById('saldo-negativo-horas');
+            const saldoNegativoMinutosInput = document.getElementById('saldo-negativo-minutos');
+            const alerta = document.getElementById('alerta');
+            const relatorioTextual = document.getElementById('relatorio-textual');
             
             // Variáveis globais
             let mesSelecionado = null;
             let anoSelecionado = null;
             let dadosPonto = {};
-            let intervaloAlerta = null;
-            let minutosAlerta = 5;
             
             // Inicializar com o mês/ano atual
             const hoje = new Date();
@@ -473,7 +452,10 @@
             btnConfirmar.addEventListener('click', confirmarMesAno);
             btnRestaurar.addEventListener('click', restaurarMes);
             observacoesTextarea.addEventListener('change', salvarDados);
-            btnSalvarConfig.addEventListener('click', salvarConfiguracaoAlerta);
+            saldoPositivoHorasInput.addEventListener('change', atualizarRelatorio);
+            saldoPositivoMinutosInput.addEventListener('change', atualizarRelatorio);
+            saldoNegativoHorasInput.addEventListener('change', atualizarRelatorio);
+            saldoNegativoMinutosInput.addEventListener('change', atualizarRelatorio);
             
             // Função para confirmar o mês/ano selecionado
             function confirmarMesAno() {
@@ -513,11 +495,19 @@
                 const matriculaSalva = localStorage.getItem('matricula');
                 if (matriculaSalva) matriculaInput.value = matriculaSalva;
                 
-                // Carregar configuração de alerta
-                const minutosAlertaSalvos = localStorage.getItem('minutosAlerta');
-                if (minutosAlertaSalvos) {
-                    minutosAlerta = parseInt(minutosAlertaSalvos);
-                    minutosAlertaInput.value = minutosAlerta;
+                // Carregar saldo do mês anterior
+                const saldoPositivoAnterior = localStorage.getItem('saldoPositivoAnterior');
+                if (saldoPositivoAnterior) {
+                    const [horas, minutos] = saldoPositivoAnterior.split(':').map(Number);
+                    saldoPositivoHorasInput.value = horas;
+                    saldoPositivoMinutosInput.value = minutos;
+                }
+                
+                const saldoNegativoAnterior = localStorage.getItem('saldoNegativoAnterior');
+                if (saldoNegativoAnterior) {
+                    const [horas, minutos] = saldoNegativoAnterior.split(':').map(Number);
+                    saldoNegativoHorasInput.value = horas;
+                    saldoNegativoMinutosInput.value = minutos;
                 }
                 
                 // Gerar tabela
@@ -528,9 +518,6 @@
                 
                 // Atualizar relatório
                 atualizarRelatorio();
-                
-                // Iniciar verificação de alertas
-                iniciarVerificacaoAlerta();
             }
             
             // Função para restaurar o mês (limpar todos os dados)
@@ -547,18 +534,44 @@
                 // Limpar dados do mês
                 const chaveDados = `ponto_${mesSelecionado}_${anoSelecionado}`;
                 const chaveObservacoes = `observacoes_${mesSelecionado}_${anoSelecionado}`;
+                const chaveSaldoPositivo = 'saldoPositivoAnterior';
+                const chaveSaldoNegativo = 'saldoNegativoAnterior';
                 
                 localStorage.removeItem(chaveDados);
                 localStorage.removeItem(chaveObservacoes);
+                localStorage.removeItem(chaveSaldoPositivo);
+                localStorage.removeItem(chaveSaldoNegativo);
                 
                 dadosPonto = {};
                 observacoesTextarea.value = '';
+                saldoPositivoHorasInput.value = '0';
+                saldoPositivoMinutosInput.value = '0';
+                saldoNegativoHorasInput.value = '0';
+                saldoNegativoMinutosInput.value = '0';
                 
                 // Regenerar a tabela
                 gerarTabela();
                 atualizarRelatorio();
                 
                 alert('Mês restaurado com sucesso! Todos os dados foram limpos.');
+            }
+            
+            // Função para contar dias úteis no mês
+            function contarDiasUteisNoMes() {
+                let diasUteis = 0;
+                const diasNoMes = new Date(anoSelecionado, mesSelecionado, 0).getDate();
+                
+                for (let dia = 1; dia <= diasNoMes; dia++) {
+                    const data = new Date(anoSelecionado, mesSelecionado - 1, dia);
+                    const diaSemana = data.getDay();
+                    
+                    // Considera dias úteis de segunda a sexta (1 a 5)
+                    if (diaSemana >= 1 && diaSemana <= 5) {
+                        diasUteis++;
+                    }
+                }
+                
+                return diasUteis;
             }
             
             // Função para gerar a tabela com os dias do mês
@@ -619,7 +632,10 @@
                     entrada1.type = 'time';
                     entrada1.value = dadosDia.entrada1 || '';
                     entrada1.disabled = isPassado && !dadosDia.editavel;
-                    entrada1.addEventListener('change', salvarDados);
+                    entrada1.addEventListener('blur', function() {
+                        validarHorario(this, null, saida1, entrada2, saida2);
+                        salvarDados();
+                    });
                     tdEntrada1.appendChild(entrada1);
                     tr.appendChild(tdEntrada1);
                     
@@ -629,7 +645,10 @@
                     saida1.type = 'time';
                     saida1.value = dadosDia.saida1 || '';
                     saida1.disabled = isPassado && !dadosDia.editavel;
-                    saida1.addEventListener('change', salvarDados);
+                    saida1.addEventListener('blur', function() {
+                        validarHorario(entrada1, this, entrada2, saida2);
+                        salvarDados();
+                    });
                     tdSaida1.appendChild(saida1);
                     tr.appendChild(tdSaida1);
                     
@@ -639,7 +658,10 @@
                     entrada2.type = 'time';
                     entrada2.value = dadosDia.entrada2 || '';
                     entrada2.disabled = isPassado && !dadosDia.editavel;
-                    entrada2.addEventListener('change', salvarDados);
+                    entrada2.addEventListener('blur', function() {
+                        validarHorario(saida1, this, saida2);
+                        salvarDados();
+                    });
                     tdEntrada2.appendChild(entrada2);
                     tr.appendChild(tdEntrada2);
                     
@@ -649,7 +671,10 @@
                     saida2.type = 'time';
                     saida2.value = dadosDia.saida2 || '';
                     saida2.disabled = isPassado && !dadosDia.editavel;
-                    saida2.addEventListener('change', salvarDados);
+                    saida2.addEventListener('blur', function() {
+                        validarHorario(entrada2, this);
+                        salvarDados();
+                    });
                     tdSaida2.appendChild(saida2);
                     tr.appendChild(tdSaida2);
                     
@@ -805,8 +830,56 @@
                 }
             }
             
+            // Função para validar se um horário é posterior ao anterior (após perder o foco)
+            function validarHorario(anterior, atual, ...proximos) {
+                if (!anterior || !anterior.value || !atual || !atual.value) return true;
+                
+                // Converter para minutos para comparação
+                function timeToMinutes(time) {
+                    const [h, m] = time.split(':').map(Number);
+                    return h * 60 + m;
+                }
+                
+                const minutosAnterior = timeToMinutes(anterior.value);
+                const minutosAtual = timeToMinutes(atual.value);
+                
+                if (minutosAtual <= minutosAnterior) {
+                    atual.classList.add('erro-horario');
+                    alert('Erro: O horário deve ser posterior ao anterior!');
+                    return false;
+                }
+                
+                // Validar próximos campos se fornecidos
+                for (const proximo of proximos) {
+                    if (proximo && proximo.value) {
+                        const minutosProximo = timeToMinutes(proximo.value);
+                        if (minutosProximo <= minutosAtual) {
+                            proximo.classList.add('erro-horario');
+                            alert('Erro: Os horários devem estar in ordem crescente!');
+                            return false;
+                        }
+                    }
+                }
+                
+                // Remover marcação de erro se tudo estiver correto
+                atual.classList.remove('erro-horario');
+                for (const proximo of proximos) {
+                    if (proximo) proximo.classList.remove('erro-horario');
+                }
+                return true;
+            }
+            
             // Função para registrar ponto automaticamente
             function registrarPontoAutomatico(entrada1, saida1, entrada2, saida2) {
+                // Se todos os campos já estão preenchidos, mostrar alerta e não fazer nada
+                if (entrada1.value && saida1.value && entrada2.value && saida2.value) {
+                    alerta.style.display = 'block';
+                    setTimeout(() => {
+                        alerta.style.display = 'none';
+                    }, 3000);
+                    return;
+                }
+                
                 const agora = new Date();
                 const horas = String(agora.getHours()).padStart(2, '0');
                 const minutos = String(agora.getMinutes()).padStart(2, '0');
@@ -816,19 +889,16 @@
                     entrada1.value = horario;
                 } else if (!saida1.value) {
                     saida1.value = horario;
+                    // Validar após preencher
+                    setTimeout(() => validarHorario(entrada1, saida1), 100);
                 } else if (!entrada2.value) {
                     entrada2.value = horario;
+                    // Validar após preencher
+                    setTimeout(() => validarHorario(saida1, entrada2), 100);
                 } else if (!saida2.value) {
                     saida2.value = horario;
-                } else {
-                    // Todos os campos estão preenchidos, perguntar se quer reiniciar
-                    if (confirm('Todos os registros já foram preenchidos para hoje. Deseja reiniciar?')) {
-                        entrada1.value = '';
-                        saida1.value = '';
-                        entrada2.value = '';
-                        saida2.value = '';
-                        entrada1.value = horario;
-                    }
+                    // Validar após preencher
+                    setTimeout(() => validarHorario(entrada2, saida2), 100);
                 }
                 
                 salvarDados();
@@ -849,14 +919,13 @@
                 }
                 
                 const jornadaPadrao = 8 * 60; // 8 horas em minutos
-                const tempoAlmoco = 60; // 1 hora em minutos
                 
                 const minutosEntrada1 = timeToMinutes(entrada1);
                 const minutosSaida1 = timeToMinutes(saida1);
                 const minutosEntrada2 = timeToMinutes(entrada2);
                 const minutosSaida2 = timeToMinutes(saida2);
                 
-                const horasTrabalhadas = (minutosSaida1 - minutosEntrada1) + (minutosSaida2 - minutosEntrada2) - tempoAlmoco;
+                const horasTrabalhadas = (minutosSaida1 - minutosEntrada1) + (minutosSaida2 - minutosEntrada2);
                 const saldoMinutos = horasTrabalhadas - jornadaPadrao;
                 
                 return minutesToTime(saldoMinutos);
@@ -867,6 +936,12 @@
                 // Salvar nome e matrícula
                 if (nomeInput.value) localStorage.setItem('nome', nomeInput.value);
                 if (matriculaInput.value) localStorage.setItem('matricula', matriculaInput.value);
+                
+                // Salvar saldo do mês anterior
+                const saldoPositivo = `${saldoPositivoHorasInput.value.padStart(2, '0')}:${saldoPositivoMinutosInput.value.padStart(2, '0')}`;
+                const saldoNegativo = `${saldoNegativoHorasInput.value.padStart(2, '0')}:${saldoNegativoMinutosInput.value.padStart(2, '0')}`;
+                localStorage.setItem('saldoPositivoAnterior', saldoPositivo);
+                localStorage.setItem('saldoNegativoAnterior', saldoNegativo);
                 
                 // Salvar observações
                 const chaveObservacoes = `observacoes_${mesSelecionado}_${anoSelecionado}`;
@@ -887,7 +962,7 @@
                                 tipo: tipoDia.value
                             };
                             
-                            // Manter o status de edição se existir
+                            // Manter o status de edição if existir
                             if (dadosPonto[chave].editavel !== undefined) {
                                 dadosPonto[chave].editavel = linha._dados.editavel;
                             }
@@ -925,11 +1000,50 @@
                 });
             }
             
-            // Função para atualizar o relatório
+            // Função para converter minutos para formato HH:MM
+            function minutesToTime(minutes) {
+                const absMinutes = Math.abs(minutes);
+                const h = Math.floor(absMinutes / 60);
+                const m = absMinutes % 60;
+                return `${minutes < 0 ? '-' : ''}${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            }
+            
+            // Função para converter tempo HH:MM para minutos
+            function timeToMinutes(time) {
+                if (!time || time === '00:00') return 0;
+                const [h, m] = time.split(':').map(Number);
+                return h * 60 + m;
+            }
+            
+            // Função para atualizar o relatório textual
             function atualizarRelatorio() {
-                let totalPrevisto = 0; // em minutos
                 let totalTrabalhado = 0; // em minutos
-                const contagemTiposDia = {};
+                let diasUteisCount = 0;
+                let diasTrabalhadosCount = 0;
+                let saldoPositivoMinutos = 0;
+                let saldoNegativoMinutos = 0;
+                
+                // Objeto para contar cada tipo de dia
+                const contagemTiposDia = {
+                    'util': 0,
+                    'fim-semana': 0,
+                    'feriado': 0,
+                    'ponto-facultativo': 0,
+                    'falta': 0,
+                    'atestado-servidor': 0,
+                    'atestado-acompanhamento': 0,
+                    'recesso': 0,
+                    'ferias': 0,
+                    'outros': 0
+                };
+                
+                // Converter saldos anteriores para minutos
+                const saldoPositivoAnteriorMin = (parseInt(saldoPositivoHorasInput.value) || 0) * 60 + (parseInt(saldoPositivoMinutosInput.value) || 0);
+                const saldoNegativoAnteriorMin = (parseInt(saldoNegativoHorasInput.value) || 0) * 60 + (parseInt(saldoNegativoMinutosInput.value) || 0);
+                
+                // Contar dias úteis no mês (segunda a sexta)
+                const diasUteisNoMes = contarDiasUteisNoMes();
+                const totalPrevistoMinutos = diasUteisNoMes * 8 * 60; // 8 horas por dia útil
                 
                 // Percorrer todas as linhas da tabela
                 const linhas = corpoTabela.querySelectorAll('tr');
@@ -937,64 +1051,109 @@
                     if (linha._dados) {
                         const { entrada1, saida1, entrada2, saida2, tipoDia } = linha._dados;
                         
-                        // Contar tipo de dia
+                        // Contar o tipo de dia
                         const tipo = tipoDia.value;
                         contagemTiposDia[tipo] = (contagemTiposDia[tipo] || 0) + 1;
                         
                         // Apenas dias úteis computam horas
                         if (tipo === 'util') {
-                            // Para dias úteis, considerar 8 horas previstas
-                            totalPrevisto += 8 * 60; // 8 horas em minutos
+                            diasUteisCount++;
                             
                             // Calcular horas trabalhadas se todos os campos estiverem preenchidos
                             if (entrada1.value && saida1.value && entrada2.value && saida2.value) {
-                                function timeToMinutes(time) {
-                                    const [h, m] = time.split(':').map(Number);
-                                    return h * 60 + m;
-                                }
+                                diasTrabalhadosCount++;
                                 
-                                const tempoAlmoco = 60; // 1 hora em minutos
                                 const minutosTrabalhados = (timeToMinutes(saida1.value) - timeToMinutes(entrada1.value)) + 
-                                                        (timeToMinutes(saida2.value) - timeToMinutes(entrada2.value)) - 
-                                                        tempoAlmoco;
+                                                        (timeToMinutes(saida2.value) - timeToMinutes(entrada2.value));
                                 
                                 totalTrabalhado += minutosTrabalhados;
+                                
+                                // Calcular saldo do dia
+                                const saldoDia = minutosTrabalhados - (8 * 60);
+                                
+                                if (saldoDia >= 0) {
+                                    saldoPositivoMinutos += saldoDia;
+                                } else {
+                                    saldoNegativoMinutos += Math.abs(saldoDia);
+                                }
+                            } else {
+                                // Dia útil não trabalhado conta como negativo
+                                saldoNegativoMinutos += 8 * 60;
                             }
                         }
                     }
                 });
                 
-                // Calcular saldo
-                const saldoMinutos = totalTrabalhado - totalPrevisto;
+                // Calcular saldo do mês atual
+                const saldoMesAtualMinutos = totalTrabalhado - totalPrevistoMinutos;
                 
-                // Converter para formato de tempo (HH:MM)
-                function minutesToTime(minutes) {
-                    const h = Math.floor(Math.abs(minutes) / 60);
-                    const m = Math.abs(minutes) % 60;
-                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-                }
+                // Calcular saldo final (considerando saldo anterior)
+                const saldoFinalMinutos = saldoMesAtualMinutos + saldoPositivoAnteriorMin - saldoNegativoAnteriorMin;
                 
-                // Atualizar relatório na interface
-                horasPrevistas.textContent = minutesToTime(totalPrevisto);
-                horasTrabalhadas.textContent = minutesToTime(totalTrabalhado);
+                // Formatar saldos anteriores para exibição
+                const saldoPositivoAnteriorStr = `${String(parseInt(saldoPositivoHorasInput.value) || 0).padStart(2, '0')}:${String(parseInt(saldoPositivoMinutosInput.value) || 0).padStart(2, '0')}`;
+                const saldoNegativoAnteriorStr = `${String(parseInt(saldoNegativoHorasInput.value) || 0).padStart(2, '0')}:${String(parseInt(saldoNegativoMinutosInput.value) || 0).padStart(2, '0')}`;
                 
-                if (saldoMinutos >= 0) {
-                    saldoPositivo.textContent = minutesToTime(saldoMinutos);
-                    saldoNegativo.textContent = '00:00';
-                } else {
-                    saldoPositivo.textContent = '00:00';
-                    saldoNegativo.textContent = minutesToTime(saldoMinutos);
-                }
+                // Gerar relatório textual
+                let relatorio = `
+RELATÓRIO DE PONTO ELETRÔNICO
+=============================
+
+Mês/Ano de referência: ${mesSelecionado}/${anoSelecionado}
+Nome: ${nomeInput.value || 'Não informado'}
+Matrícula: ${matriculaInput.value || 'Não informada'}
+
+Dias úteis no mês: ${diasUteisNoMes}
+Dias trabalhados: ${diasTrabalhadosCount}
+`;
                 
-                // Atualizar contagem de tipos de dias
-                let textoContagem = '';
-                for (const tipo in contagemTiposDia) {
+                // Adicionar apenas os tipos de dias que existem
+                const tiposDiasMap = {
+                    'feriado': 'Feriados',
+                    'ponto-facultativo': 'Pontos facultativos',
+                    'falta': 'Faltas',
+                    'atestado-servidor': 'Atestados de servidor',
+                    'atestado-acompanhamento': 'Atestados de acompanhamento',
+                    'recesso': 'Recessos',
+                    'ferias': 'Férias',
+                    'outros': 'Outros',
+                    'fim-semana': 'Fins de semana'
+                };
+                
+                for (const [tipo, label] of Object.entries(tiposDiasMap)) {
                     if (contagemTiposDia[tipo] > 0) {
-                        textoContagem += `${contagemTiposDia[tipo]} ${tipo}, `;
+                        relatorio += `${label}: ${contagemTiposDia[tipo]}\n`;
                     }
                 }
                 
-                tiposDias.textContent = textoContagem.slice(0, -2) || '-';
+                relatorio += `
+Total de horas previstas: ${minutesToTime(totalPrevistoMinutos)}
+Total de horas trabalhadas: ${minutesToTime(totalTrabalhado)}
+
+Saldo positivo do mês: ${minutesToTime(saldoPositivoMinutos)}
+Saldo negativo do mês: ${minutesToTime(saldoNegativoMinutos)}
+
+Saldo positivo anterior: ${saldoPositivoAnteriorStr}
+Saldo negativo anterior: ${saldoNegativoAnteriorStr}
+
+SALDO FINAL: ${minutesToTime(saldoFinalMinutos)}
+`.trim();
+                
+                // Atualizar relatório na interface
+                relatorioTextual.textContent = relatorio;
+                
+                // Aplicar estilo ao saldo final
+                if (saldoFinalMinutos > 0) {
+                    relatorioTextual.innerHTML = relatorio.replace(
+                        'SALDO FINAL: ' + minutesToTime(saldoFinalMinutos),
+                        `<span class="saldo-positivo">SALDO FINAL: ${minutesToTime(saldoFinalMinutos)}</span>`
+                    );
+                } else if (saldoFinalMinutos < 0) {
+                    relatorioTextual.innerHTML = relatorio.replace(
+                        'SALDO FINAL: ' + minutesToTime(saldoFinalMinutos),
+                        `<span class="saldo-negativo">SALDO FINAL: ${minutesToTime(saldoFinalMinutos)}</span>`
+                    );
+                }
             }
             
             // Função para carregar dados salvos
@@ -1006,75 +1165,20 @@
                 const matriculaSalva = localStorage.getItem('matricula');
                 if (matriculaSalva) matriculaInput.value = matriculaSalva;
                 
-                // Carregar configuração de alerta
-                const minutosAlertaSalvos = localStorage.getItem('minutosAlerta');
-                if (minutosAlertaSalvos) {
-                    minutosAlerta = parseInt(minutosAlertaSalvos);
-                    minutosAlertaInput.value = minutosAlerta;
-                }
-            }
-            
-            // Função para salvar configuração de alerta
-            function salvarConfiguracaoAlerta() {
-                minutosAlerta = parseInt(minutosAlertaInput.value);
-                localStorage.setItem('minutosAlerta', minutosAlerta);
-                alert('Configuração de alerta salva com sucesso!');
-            }
-            
-            // Função para verificar se precisa alertar sobre segunda entrada
-            function verificarAlertaSegundaEntrada() {
-                const hoje = new Date();
-                const chaveDia = `${hoje.getDate().toString().padStart(2, '0')}-${(hoje.getMonth()+1).toString().padStart(2, '0')}-${hoje.getFullYear()}`;
-                const dadosHoje = dadosPonto[chaveDia];
-                
-                // Se não há dados para hoje ou já tem segunda entrada, não alertar
-                if (!dadosHoje || !dadosHoje.saida1 || dadosHoje.entrada2) {
-                    return;
+                // Carregar saldo do mês anterior
+                const saldoPositivoAnterior = localStorage.getItem('saldoPositivoAnterior');
+                if (saldoPositivoAnterior) {
+                    const [horas, minutos] = saldoPositivoAnterior.split(':').map(Number);
+                    saldoPositivoHorasInput.value = horas;
+                    saldoPositivoMinutosInput.value = minutos;
                 }
                 
-                // Calcular horário esperado para segunda entrada (1 hora após a primeira saída)
-                const [horaSaida, minutoSaida] = dadosHoje.saida1.split(':').map(Number);
-                const saidaDate = new Date();
-                saidaDate.setHours(horaSaida, minutoSaida, 0, 0);
-                
-                // Horário mínimo para segunda entrada (1 hora após a saída)
-                const horarioMinEntrada2 = new Date(saidaDate.getTime() + 60 * 60000);
-                
-                // Horário de alerta (5 minutos antes do horário mínimo)
-                const horarioAlerta = new Date(horarioMinEntrada2.getTime() - minutosAlerta * 60000);
-                
-                // Verificar se estamos no período de alerta
-                if (hoje >= horarioAlerta && hoje < horarioMinEntrada2) {
-                    // Mostrar notificação
-                    notificacao.style.display = 'block';
-                    notificacao.textContent = `Lembrete: Hora de bater a segunda entrada em até ${minutosAlerta} minutos!`;
-                    
-                    // Tocar alerta sonoro (se disponível)
-                    try {
-                        alarmeSonoro.play();
-                    } catch (e) {
-                        console.log('Erro ao reproduzir áudio:', e);
-                    }
-                    
-                    // Ocultar notificação após 10 segundos
-                    setTimeout(() => {
-                        notificacao.style.display = 'none';
-                    }, 10000);
+                const saldoNegativoAnterior = localStorage.getItem('saldoNegativoAnterior');
+                if (saldoNegativoAnterior) {
+                    const [horas, minutos] = saldoNegativoAnterior.split(':').map(Number);
+                    saldoNegativoHorasInput.value = horas;
+                    saldoNegativoMinutosInput.value = minutos;
                 }
-            }
-            
-            // Função para iniciar verificação de alertas
-            function iniciarVerificacaoAlerta() {
-                // Limpar intervalo anterior se existir
-                if (intervaloAlerta) {
-                    clearInterval(intervaloAlerta);
-                }
-                
-                // Verificar a cada minuto
-                intervaloAlerta = setInterval(verificarAlertaSegundaEntrada, 60000);
-                
-                // Verificar imediatamente ao iniciar
-                verificarAlertaSegundaEntrada();
             }
         });
     </script>
